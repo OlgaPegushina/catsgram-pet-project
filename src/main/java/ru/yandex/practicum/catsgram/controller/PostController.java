@@ -23,19 +23,16 @@ public class PostController {
 
     @PostMapping
     public Post create(@RequestBody Post post) {
-        // проверяем выполнение необходимых условий
         if (post.getDescription() == null || post.getDescription().isBlank()) {
             throw new ConditionsNotMetException("Описание не может быть пустым");
         }
-        // формируем дополнительные данные
+
         post.setId(getNextId());
         post.setPostDate(Instant.now());
-        // сохраняем новую публикацию в памяти приложения
         posts.put(post.getId(), post);
         return post;
     }
 
-    // вспомогательный метод для генерации идентификатора нового поста
     private long getNextId() {
         long currentMaxId = posts.keySet()
                 .stream()
@@ -47,7 +44,6 @@ public class PostController {
 
     @PutMapping
     public Post update(@RequestBody Post newPost) {
-        // проверяем необходимые условия
         if (newPost.getId() == null) {
             throw new ConditionsNotMetException("Id должен быть указан");
         }
@@ -56,7 +52,6 @@ public class PostController {
             if (newPost.getDescription() == null || newPost.getDescription().isBlank()) {
                 throw new ConditionsNotMetException("Описание не может быть пустым");
             }
-            // если публикация найдена и все условия соблюдены, обновляем её содержимое
             oldPost.setDescription(newPost.getDescription());
             return oldPost;
         }
